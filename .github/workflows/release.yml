@@ -40,14 +40,15 @@ jobs:
         run: npm run build
 
       - name: Build Tauri Package and Publish GitHub Release
+        id: tauri_build
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: v__VERSION__
-          releaseName: 'Noryx Dynamic Island v__VERSION__'
+          tagName: ${{ github.ref_name }}
+          releaseName: 'Noryx Dynamic Island ${{ github.ref_name }}'
           releaseBody: |
-            ## Noryx Dynamic Island for Windows v__VERSION__
+            ## Noryx Dynamic Island for Windows ${{ github.ref_name }}
 
             ### ✨ Điểm nổi bật (Highlights)
             - 🎵 **Đồng bộ âm nhạc & sóng âm**: Tự động nhận diện Spotify, YouTube, Apple Music kèm sóng âm thật.
@@ -57,11 +58,25 @@ jobs:
             - 🎮 **Tự động ẩn Fullscreen**: Tự ẩn khi chơi game (Valorant, CS2, LOL) hoặc xem phim toàn màn hình.
             - 🔆 **Thanh trượt Độ sáng & Âm lượng**: Cử chỉ lăn chuột trái/phải điều khiển mượt mà.
             - ⚙️ **Menu Cài đặt nhanh**: Click icon khay Taskbar để cấu hình tự khởi động, Liquid Glass.
+            - 🛡️ **Tối ưu hóa độc lập**: Loại bỏ hoàn toàn cửa sổ CMD đen, nhúng trọn bộ giao diện vào file thực thi.
 
             ### 📦 Tệp tải về (Downloads)
+            - **`Noryx_Dynamic_Island_Portable.exe`**: Bản di động chạy ngay không cần cài đặt.
             - **`Noryx Dynamic Island_x64-setup.exe`**: Trình cài đặt tự động tạo shortcut Desktop & Start Menu.
             - **`Noryx Dynamic Island_x64_en-US.msi`**: Gói cài đặt Windows Installer MSI chuẩn Microsoft.
           releaseDraft: false
           prerelease: false
           args: ${{ matrix.args }}
 
+      - name: Prepare Portable Executable
+        shell: pwsh
+        run: |
+          Copy-Item "src-tauri/target/release/noryx-dynamic-island.exe" "Noryx_Dynamic_Island_Portable.exe" -Force
+
+      - name: Upload Portable Executable to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: Noryx_Dynamic_Island_Portable.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

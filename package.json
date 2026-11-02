@@ -1,7 +1,7 @@
 {
   "name": "noryx-dynamic-island",
   "productName": "Noryx Dynamic Island",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Ultra-refined Apple-inspired Dynamic Island for Windows built with Tauri v2, Rust & React.",
   "private": true,
   "type": "module",

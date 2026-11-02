@@ -1,6 +1,6 @@
 [package]
 name = "noryx-dynamic-island"
-version = "0.1.0"
+version = "0.1.1"
 description = "A fluid Dynamic Island for PC"
 authors = ["Noryx"]
 edition = "2021"
