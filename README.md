@@ -1,12 +1,13 @@
 <div align="center">
 
-<img src="./assets/banner.png" alt="Noryx Dynamic Island Banner" width="180" style="border-radius: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.6);" />
+<img src="./assets/banner.png" alt="Noryx Dynamic Island Banner" width="160" style="border-radius: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.6);" />
 
 # Noryx Dynamic Island for Windows
 
 **Trải nghiệm Dynamic Island đẳng cấp Apple trên Windows 10 & 11**  
 *An ultra-refined, fluid Dynamic Island built with Tauri v2, Rust & React 19.*
 
+[![GitHub Release](https://img.shields.io/github/v/release/noryx/dynamic-island?style=for-the-badge&logo=github&color=38bdf8)](https://github.com/noryx/dynamic-island/releases)
 [![Platform: Windows](https://img.shields.io/badge/Platform-Windows%2010%20%7C%2011-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com)
 [![Framework: Tauri v2](https://img.shields.io/badge/Tauri-v2-FFC131?style=for-the-badge&logo=tauri&logoColor=black)](https://tauri.app)
 [![Backend: Rust](https://img.shields.io/badge/Backend-Rust-DEA584?style=for-the-badge&logo=rust&logoColor=black)](https://www.rust-lang.org)
@@ -15,34 +16,55 @@
 
 <br/>
 
-[Tải về bản Release](#-tải-về-và-cài-đặt-download) • [Tính năng nổi bật](#-tính-năng-nổi-bật-features) • [Cử chỉ & Phím tắt](#-cử-chỉ--phím-tắt-shortcuts--gestures) • [Hướng dẫn cài đặt](#-hướng-dẫn-phát-triển-build-from-source)
+[Tải về bản cài đặt (Releases)](#-tải-về-và-cài-đặt-download--releases) • [Xem trước giao diện (Demos)](#-xem-trước-giao-diện-visual-demos) • [Tính năng nổi bật](#-tính-năng-nổi-bật-features) • [Cử chỉ & Phím tắt](#-cử-chỉ--phím-tắt-shortcuts--gestures) • [Quy trình đóng gói GitHub (GitHub Packaging)](#-quy-trình-đóng-gói-lên-github-releases-github-packaging)
 
 </div>
 
 ---
 
-## 📸 Hình ảnh Demo (Visual Demos)
+## 📸 Xem trước giao diện (Visual Demos)
 
 <div align="center">
 
 ### 1. Trạng thái thu gọn tinh tế (Compact Pill)
-Thời tiết thực tế, đồng hồ giờ/phút sắc nét chuẩn font **Inter** kết hợp chỉ số quyền riêng tư Microphone & Camera.
+Thời tiết thực tế, tốc độ tải mạng thời gian thực (`14.5 MB/s`), đồng hồ giờ/phút sắc nét font **Inter** kết hợp chỉ số quyền riêng tư Microphone & Camera.
 
-<img src="./assets/demo-compact.png" alt="Dynamic Island Compact Pill" width="400" style="border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.4);" />
+<img src="./assets/demo-compact.png" alt="Dynamic Island Compact Pill" width="560" style="border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);" />
 
 <br/><br/>
 
 ### 2. Trình phát nhạc & Sóng âm nhịp nhàng (Music Island)
 Tự động đồng bộ với Spotify, YouTube, Apple Music qua Windows GSMTC kèm ảnh bìa album và sóng âm tần số.
 
-<img src="./assets/demo-music.png" alt="Dynamic Island Music Player" width="420" style="border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.4);" />
+<img src="./assets/demo-music.png" alt="Dynamic Island Music Player" width="560" style="border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);" />
 
 <br/><br/>
 
-### 3. Tự nhiên trên màn hình làm việc (Desktop Integration)
-Neo nhẹ nhàng ngay đỉnh màn hình máy tính, tích hợp hiệu ứng **Liquid Glass** (kính lỏng khúc xạ) trong suốt sang trọng.
+### 3. Xem trước Ảnh chụp màn hình tức thì (Screenshot Preview HUD)
+Khi bấm `Win + Shift + S` hoặc `PrtScn`, đảo lập tức hiển thị ảnh thumbnail thu nhỏ của chính bức ảnh vừa chụp.
 
-<img src="./assets/demo-desktop.png" alt="Dynamic Island Desktop Workspace" width="700" style="border-radius: 12px; box-shadow: 0 12px 36px rgba(0,0,0,0.5);" />
+<img src="./assets/demo-screenshot.png" alt="Screenshot Preview HUD" width="560" style="border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);" />
+
+<br/><br/>
+
+### 4. Trình phát đa phương tiện mở rộng (Expanded Card)
+Click vào đảo để mở thẻ trình phát nhạc cao cấp: Ảnh bìa lớn, tên bài hát, nghệ sĩ, thanh thời lượng kéo thả và cụm điều khiển Play/Pause/Next.
+
+<img src="./assets/demo-expanded.png" alt="Expanded Media Card" width="650" style="border-radius: 18px; box-shadow: 0 14px 40px rgba(0,0,0,0.6);" />
+
+<br/><br/>
+
+### 5. Menu Cài đặt khay hệ thống (Settings Flyout)
+Click icon ở góc dưới bên phải khay Taskbar để cấu hình: Khởi động cùng Windows, hiệu ứng Liquid Glass, tự ẩn khi chơi game, hoặc tạm ẩn đảo.
+
+<img src="./assets/demo-settings.png" alt="Settings Flyout" width="480" style="border-radius: 18px; box-shadow: 0 14px 40px rgba(0,0,0,0.6);" />
+
+<br/><br/>
+
+### 6. Không gian làm việc Desktop (Desktop Workspace)
+Neo tự nhiên, trong suốt và nổi bật trên mọi hình nền màn hình.
+
+<img src="./assets/demo-desktop.png" alt="Desktop Workspace" width="760" style="border-radius: 16px; box-shadow: 0 16px 50px rgba(0,0,0,0.7);" />
 
 </div>
 
@@ -87,9 +109,9 @@ Neo nhẹ nhàng ngay đỉnh màn hình máy tính, tích hợp hiệu ứng **
 
 ---
 
-## 📦 Tải về và Cài đặt (Download)
+## 📦 Tải về và Cài đặt (Download & Releases)
 
-Các file biên dịch sẵn nằm trực tiếp trong thư mục [`release/`](./release/):
+Bạn có thể tải trực tiếp file cài đặt mới nhất từ mục **[GitHub Releases](https://github.com/noryx/dynamic-island/releases)** hoặc trong thư mục [`release/`](./release/):
 
 | Phiên bản | Tên file | Dung lượng | Đặc điểm |
 | :--- | :--- | :---: | :--- |
@@ -98,7 +120,37 @@ Các file biên dịch sẵn nằm trực tiếp trong thư mục [`release/`](.
 
 ---
 
-## 🛠️ Hướng dẫn phát triển (Build from Source)
+## 🚀 Quy trình đóng gói lên GitHub (GitHub Packaging)
+
+Dự án đã tích hợp sẵn GitHub Actions Workflow tự động đóng gói ứng dụng tại [`.github/workflows/release.yml`](./.github/workflows/release.yml).
+
+### Cách phát hành phiên bản mới (Publish a Release)
+
+Mỗi khi bạn muốn đóng gói và đẩy file `.exe` lên mục **GitHub Releases** cho người dùng tải:
+
+1. **Commit các thay đổi mã nguồn**:
+   ```bash
+   git add .
+   git commit -m "feat: release new update"
+   ```
+
+2. **Gắn thẻ phiên bản (Git Tag)**:
+   ```bash
+   git tag v0.1.0
+   ```
+
+3. **Đẩy code và tag lên GitHub**:
+   ```bash
+   git push origin main --tags
+   ```
+
+4. **Tự động hoàn tất**:
+   - GitHub Actions sẽ tự động kích hoạt máy ảo Windows, biên dịch toàn bộ mã nguồn Rust + Tauri và nén file cài đặt `.exe` và `.msi`.
+   - File `.exe` sẽ được tải lên mục **Releases** trên GitHub để bất kỳ ai cũng có thể vào tải về dễ dàng.
+
+---
+
+## 🛠️ Hướng dẫn phát triển cục bộ (Build from Source)
 
 ### Yêu cầu môi trường (Prerequisites)
 - [Node.js](https://nodejs.org/) (phiên bản 18+ hoặc 20+)
@@ -107,27 +159,16 @@ Các file biên dịch sẵn nằm trực tiếp trong thư mục [`release/`](.
 
 ### Các bước cài đặt & chạy mã nguồn
 
-1. **Clone repository**:
-   ```bash
-   git clone https://github.com/noryx/dynamic-island.git
-   cd dynamic-island
-   ```
+```bash
+# 1. Cài đặt dependencies
+npm install
 
-2. **Cài đặt dependencies**:
-   ```bash
-   npm install
-   ```
+# 2. Chạy ở môi trường Development
+npm run tauri:dev
 
-3. **Chạy ở môi trường Development**:
-   ```bash
-   npm run tauri:dev
-   ```
-
-4. **Biên dịch bản Release**:
-   ```bash
-   npm run tauri:build
-   ```
-   *File cài đặt `.exe` và `.msi` sẽ được tự động xuất ra thư mục `src-tauri/target/release/bundle/`.*
+# 3. Biên dịch bản Release cục bộ
+npm run tauri:build
+```
 
 ---
 

@@ -1,0 +1,67 @@
+name: 'Release Noryx Dynamic Island'
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  release:
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: 'windows-latest'
+            args: ''
+
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Build Tauri Package and Publish GitHub Release
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: v__VERSION__
+          releaseName: 'Noryx Dynamic Island v__VERSION__'
+          releaseBody: |
+            ## Noryx Dynamic Island for Windows v__VERSION__
+
+            ### ✨ Điểm nổi bật (Highlights)
+            - 🎵 **Đồng bộ âm nhạc & sóng âm**: Tự động nhận diện Spotify, YouTube, Apple Music kèm sóng âm thật.
+            - 📷 **Xem trước ảnh chụp màn hình (Screenshot Preview)**: Bấm `Win + Shift + S`, đảo hiện ngay thumbnail ảnh vừa chụp.
+            - ⚡ **Cảnh báo phần cứng**: Bung cảnh báo hổ phách khi CPU hoặc RAM vượt 90%.
+            - 🚀 **Đo tốc độ mạng thời gian thực**: Hiện tốc độ tải ngầm `14.5 MB/s` cạnh đồng hồ khi tải nặng.
+            - 🎮 **Tự động ẩn Fullscreen**: Tự ẩn khi chơi game (Valorant, CS2, LOL) hoặc xem phim toàn màn hình.
+            - 🔆 **Thanh trượt Độ sáng & Âm lượng**: Cử chỉ lăn chuột trái/phải điều khiển mượt mà.
+            - ⚙️ **Menu Cài đặt nhanh**: Click icon khay Taskbar để cấu hình tự khởi động, Liquid Glass.
+
+            ### 📦 Tệp tải về (Downloads)
+            - **`Noryx Dynamic Island_x64-setup.exe`**: Trình cài đặt tự động tạo shortcut Desktop & Start Menu.
+            - **`Noryx Dynamic Island_x64_en-US.msi`**: Gói cài đặt Windows Installer MSI chuẩn Microsoft.
+          releaseDraft: false
+          prerelease: false
+          args: ${{ matrix.args }}
+
