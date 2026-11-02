@@ -1,13 +1,31 @@
 {
-  "name": "tauri-app",
-  "private": true,
+  "name": "noryx-dynamic-island",
+  "productName": "Noryx Dynamic Island",
   "version": "0.1.0",
+  "description": "Ultra-refined Apple-inspired Dynamic Island for Windows built with Tauri v2, Rust & React.",
+  "private": true,
   "type": "module",
+  "author": "Noryx Studio",
+  "license": "MIT",
+  "keywords": [
+    "dynamic-island",
+    "windows",
+    "tauri",
+    "tauri-v2",
+    "rust",
+    "react",
+    "framer-motion",
+    "liquid-glass",
+    "system-monitor",
+    "desktop-widget"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
