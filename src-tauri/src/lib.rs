@@ -464,8 +464,24 @@ fn toggle_autostart() -> Result<bool, String> {
     } else {
         if let Ok(exe_path) = std::env::current_exe() {
             let path_str = exe_path.to_string_lossy().to_string();
+            // Nếu đang chạy từ target\debug trong quá trình dev, tự động trỏ đến bản release portable
+            let final_path = if path_str.to_lowercase().contains(r"\target\debug\") {
+                let release_candidate = exe_path.ancestors().nth(3).map(|p| p.join(r"release\Noryx_Dynamic_Island_Portable.exe"));
+                if let Some(ref r) = release_candidate {
+                    if r.exists() {
+                        r.to_string_lossy().to_string()
+                    } else {
+                        path_str
+                    }
+                } else {
+                    path_str
+                }
+            } else {
+                path_str
+            };
+
             let _ = std::process::Command::new("reg")
-                .args(["add", "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run", "/v", "NoryxDynamicIsland", "/t", "REG_SZ", "/d", &format!("\"{}\"", path_str), "/f"])
+                .args(["add", "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run", "/v", "NoryxDynamicIsland", "/t", "REG_SZ", "/d", &format!("\"{}\"", final_path), "/f"])
                 .creation_flags(0x08000000)
                 .output();
         }
