@@ -1,3 +1,4 @@
+
 name: 'Release Noryx Dynamic Island'
 
 on:
@@ -5,78 +6,131 @@ on:
     tags:
       - 'v*'
   workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Release tag (example: v0.1.0)'
+        required: true
+        type: string
+        default: 'v0.1.0'
+
+# IMPORTANT: Allow GitHub Actions to create releases and upload assets.
+permissions:
+  contents: write
 
 jobs:
   release:
+    name: Build Windows Release
     permissions:
       contents: write
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - platform: 'windows-latest'
-            args: ''
 
-    runs-on: ${{ matrix.platform }}
+    runs-on: windows-latest
+
     steps:
+      # 1. Checkout source code
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
+      # 2. Determine release tag
+      - name: Set release tag
+        shell: pwsh
+        run: |
+          if ("${{ github.event_name }}" -eq "workflow_dispatch") {
+            $tag = "${{ inputs.tag_name }}"
+          } else {
+            $tag = "${{ github.ref_name }}"
+          }
+
+          if ($tag -notmatch '^v[0-9]+\.[0-9]+\.[0-9]+') {
+            throw "Invalid release tag: $tag"
+          }
+
+          "RELEASE_TAG=$tag" >> $env:GITHUB_ENV
+          Write-Host "Release tag: $tag"
+
+      # 3. Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
+          cache: npm
 
+      # 4. Install Rust
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: x86_64-pc-windows-msvc
 
+      # 5. Install frontend dependencies
       - name: Install dependencies
         run: npm install
 
+      # 6. Build frontend
       - name: Build frontend
         run: npm run build
 
+      # 7. Build Tauri and create GitHub Release
       - name: Build Tauri Package and Publish GitHub Release
         id: tauri_build
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: ${{ github.ref_name }}
-          releaseName: 'Noryx Dynamic Island ${{ github.ref_name }}'
+          tagName: ${{ env.RELEASE_TAG }}
+          releaseName: 'Noryx Dynamic Island ${{ env.RELEASE_TAG }}'
           releaseBody: |
-            ## Noryx Dynamic Island for Windows ${{ github.ref_name }}
+            # Noryx Dynamic Island for Windows
 
-            ### ✨ Điểm nổi bật (Highlights)
+            Version: ${{ env.RELEASE_TAG }}
+
+            ## ✨ Điểm nổi bật (Highlights)
+
             - 🎵 **Đồng bộ âm nhạc & sóng âm**: Tự động nhận diện Spotify, YouTube, Apple Music kèm sóng âm thật.
-            - 📷 **Xem trước ảnh chụp màn hình (Screenshot Preview)**: Bấm `Win + Shift + S`, đảo hiện ngay thumbnail ảnh vừa chụp.
-            - ⚡ **Cảnh báo phần cứng**: Bung cảnh báo hổ phách khi CPU hoặc RAM vượt 90%.
-            - 🚀 **Đo tốc độ mạng thời gian thực**: Hiện tốc độ tải ngầm `14.5 MB/s` cạnh đồng hồ khi tải nặng.
-            - 🎮 **Tự động ẩn Fullscreen**: Tự ẩn khi chơi game (Valorant, CS2, LOL) hoặc xem phim toàn màn hình.
-            - 🔆 **Thanh trượt Độ sáng & Âm lượng**: Cử chỉ lăn chuột trái/phải điều khiển mượt mà.
-            - ⚙️ **Menu Cài đặt nhanh**: Click icon khay Taskbar để cấu hình tự khởi động, Liquid Glass.
-            - 🛡️ **Tối ưu hóa độc lập**: Loại bỏ hoàn toàn cửa sổ CMD đen, nhúng trọn bộ giao diện vào file thực thi.
+            - 📷 **Xem trước ảnh chụp màn hình**: Bấm `Win + Shift + S`, hiển thị thumbnail ảnh vừa chụp.
+            - ⚡ **Cảnh báo phần cứng**: Cảnh báo khi CPU hoặc RAM vượt 90%.
+            - 🚀 **Đo tốc độ mạng thời gian thực**: Hiển thị tốc độ tải xuống.
+            - 🎮 **Tự động ẩn Fullscreen**: Tự ẩn khi chơi game hoặc xem phim toàn màn hình.
+            - 🔆 **Thanh trượt độ sáng & âm lượng**: Điều khiển nhanh bằng chuột.
+            - ⚙️ **Menu cài đặt nhanh**: Cấu hình tự khởi động và Liquid Glass.
+            - 🛡️ **Tối ưu hóa độc lập**: Không cần cửa sổ CMD riêng.
 
-            ### 📦 Tệp tải về (Downloads)
-            - **`Noryx_Dynamic_Island_Portable.exe`**: Bản di động chạy ngay không cần cài đặt.
-            - **`Noryx Dynamic Island_x64-setup.exe`**: Trình cài đặt tự động tạo shortcut Desktop & Start Menu.
-            - **`Noryx Dynamic Island_x64_en-US.msi`**: Gói cài đặt Windows Installer MSI chuẩn Microsoft.
+            ## 📦 Downloads
+
+            - **Portable EXE**: Chạy ngay, không cần cài đặt.
+            - **NSIS Setup EXE**: Trình cài đặt Windows.
+            - **MSI Installer**: Gói cài đặt Windows Installer.
+
+            ## 🔄 Auto Updater
+
+            Các file chữ ký `.sig` và gói cập nhật `.zip` được đính kèm nếu được Tauri tạo ra.
+
           releaseDraft: false
           prerelease: false
-          args: ${{ matrix.args }}
+          args: ''
 
+      # 8. Prepare Portable EXE
       - name: Prepare Portable Executable
         shell: pwsh
         run: |
-          Copy-Item "src-tauri/target/release/noryx-dynamic-island.exe" "Noryx_Dynamic_Island_Portable.exe" -Force
+          $source = "src-tauri/target/release/noryx-dynamic-island.exe"
+          $destination = "Noryx_Dynamic_Island_Portable.exe"
 
+          if (!(Test-Path $source)) {
+            throw "Portable source executable not found: $source"
+          }
+
+          Copy-Item $source $destination -Force
+
+          Write-Host "Portable executable prepared successfully."
+
+      # 9. Upload Portable EXE to existing GitHub Release
       - name: Upload Portable Executable to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_name }}
-          files: Noryx_Dynamic_Island_Portable.exe
+          tag_name: ${{ env.RELEASE_TAG }}
+          files: |
+            Noryx_Dynamic_Island_Portable.exe
+          fail_on_unmatched_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
